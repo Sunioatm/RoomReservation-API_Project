@@ -43,34 +43,37 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!(email && password)) {
-      return res.status(400).send("Missing required fields.");
+    try {
+      const { identifier, password } = req.body;
+  
+      if (!(identifier && password)) {
+        return res.status(400).send("Missing required fields.");
+      }
+  
+      // Check if the identifier is either an email or a username
+      const user = await User.findOne({
+        $or: [{ email: identifier }, { username: identifier }],
+      });
+  
+      if (user && (await bcrypt.compare(password, user.password))) {
+        const token = jwt.sign(
+          { user_id: user._id, email: user.email },
+          process.env.TOKEN_KEY,
+          {
+            expiresIn: "2h",
+          }
+        );
+  
+        user.token = token;
+  
+        res.status(200).json(user);
+      } else {
+        res.status(401).send("Invalid email/username or password.");
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal server error.");
     }
-
-    const user = await User.findOne({ email });
-
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const token = jwt.sign(
-        { user_id: user._id, email },
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: "2h",
-        }
-      );
-
-      user.token = token;
-
-      res.status(200).json(user);
-    } else {
-      res.status(401).send("Invalid email or password.");
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal server error.");
-  }
-});
-
+  });
+  
 module.exports = router;
