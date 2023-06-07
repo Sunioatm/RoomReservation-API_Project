@@ -47,9 +47,9 @@ router.get("/show", async (req, res) => {
 
 router.get("/check", async (req, res) => {
     try {
-        const { identifier, dateTime } = req.body; // in this format "DD/MM/YY HH:mm"
+        const { identifier, start, end } = req.query;
 
-        if (!(identifier && dateTime)) {
+        if (!(identifier && start && end)) {
             return res.status(400).send("Missing required fields.");
         }
 
@@ -57,17 +57,34 @@ router.get("/check", async (req, res) => {
 
         const room = await Room.findOne(searchQuery);
 
-        if (room && room.canReserve) {
-            res.status(200).send("This room is available");
-        } else {
-            res.status(409).send("This room is unavailable");
+        if (!room) {
+            return res.status(404).send("Room not found.");
         }
 
+        const startReserve = moment.tz(start, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
+        const endReserve = moment.tz(end, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
+
+        const isReserved = room.reserveDate.some(([reservedStart, reservedEnd]) => {
+            return (
+                (startReserve >= reservedStart && startReserve < reservedEnd) ||
+                (endReserve > reservedStart && endReserve <= reservedEnd) ||
+                (startReserve <= reservedStart && endReserve >= reservedEnd)
+            );
+        });
+
+        if (isReserved) {
+            res.status(409).send("This room is unavailable during the specified time.");
+        } else {
+            res.status(200).send("This room is available during the specified time.");
+        }
     } catch (error) {
         console.error(error);
         res.status(500).send("Internal server error.");
     }
 });
+
+  
+
 
 
 // หาห้องประชุมที่ต้องการด้วย id (roomId auto increment เองทีละ 1)
