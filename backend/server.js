@@ -7,6 +7,7 @@ const connectDB = require("./configs/db.js")
 connectDB.connectDB()
 
 const userRoutes = require("./routes/userRoutes.js")
+const roomRoutes = require("./routes/roomRoutes.js")
 
 const app = express()
 app.use(express.json())
@@ -15,6 +16,8 @@ app.use(cors());
 
 
 app.use("/api/users", userRoutes)
+app.use("/api/rooms", roomRoutes)
+
 
 app.get("/", (req, res) => {
   res.send("Server is running")
