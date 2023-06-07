@@ -101,14 +101,18 @@ router.post("/reserve", async (req, res) => {
             return res.status(404).send("Room not found.");
         }
 
-        room.start = moment.tz(start, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
-        room.end = moment.tz(end, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
-        room.canReserve = false;
+        if (room.canReserve) {
+            room.start = moment.tz(start, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
+            room.end = moment.tz(end, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
+            room.canReserve = false;
+            
+            await room.save();
+            res.status(200).json(room);
 
-        await room.save();
+        } else {
+            res.status(409).send("This room is already reserved.")
+        }
 
-
-        res.status(200).json(room);
     } catch (error) {
         console.error(error);
         res.status(500).send("Internal server error: " + error.message);
