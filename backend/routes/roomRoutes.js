@@ -75,12 +75,8 @@ router.get("/:name", async (req, res) => {
 
 router.get("/name/:name", async (req, res) => {
     try {
-      const name = req.params.name;
-      const temp = await Room.find();
-  
-      const room = temp.find((room) => {
-        room.name.toLowerCase() === name.toLowerCase()
-      })
+      const inputName = req.params.name.toLowerCase();
+      const room = await Room.findOne({ name: { $regex: new RegExp(inputName, 'i') } });
   
       if (!room) {
         return res.status(404).send("Room not found.");
@@ -92,6 +88,8 @@ router.get("/name/:name", async (req, res) => {
       res.status(500).send("Internal server error: " + error.message);
     }
   });
+  
+  
   
   
 

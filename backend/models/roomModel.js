@@ -22,6 +22,9 @@ const roomSchema = new mongoose.Schema({
     },
     end: {
         type: Date
+    },
+    status: {
+        type: Boolean
     }
 })
 
