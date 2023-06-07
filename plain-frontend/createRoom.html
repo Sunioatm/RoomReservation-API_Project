@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create New Room</title>
+</head>
+<body>
+  <h1>Create New Room</h1>
+  <form id="create-room-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+    <br>
+    <label for="capacity">Capacity:</label>
+    <input type="number" id="capacity" name="capacity" required>
+    <br>
+    <label for="details">Details:</label>
+    <textarea id="details" name="details"></textarea>
+    <br>
+    <button type="submit">Create Room</button>
+  </form>
+
+  <script>
+    // Function to handle form submission
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const formData = new FormData(form);
+      const requestBody = Object.fromEntries(formData);
+
+      // Send a POST request to the API to create a new room
+      fetch('http://localhost:5000/api/rooms/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Handle the response from the API
+        console.log('New room created:', data);
+        // Reset the form
+        form.reset();
+        window.location.href = 'allRoom.html'; // Redirect to index.html
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    // Add event listener to the form
+    const createRoomForm = document.getElementById('create-room-form');
+    createRoomForm.addEventListener('submit', handleFormSubmit);
+  </script>
+</body>
+</html>

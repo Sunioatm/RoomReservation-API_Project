@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Room Information</title>
+</head>
+<body>
+  <h1>Room Information</h1>
+  <div id="room-list"></div>
+
+  <script>
+    // Function to format date and time in local timezone
+    function formatDateTime(dateTimeString) {
+      const options = { timeZone: 'Asia/Bangkok', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+      return new Date(dateTimeString).toLocaleString('en-US', options);
+    }
+
+    // Fetch room data from the API
+    fetch('http://localhost:5000/api/rooms/show')
+      .then(response => response.json())
+      .then(data => {
+        const roomListElement = document.getElementById('room-list');
+        data.forEach(room => {
+          const roomElement = document.createElement('div');
+          const formattedStart = room.start ? formatDateTime(room.start) : '';
+          const formattedEnd = room.end ? formatDateTime(room.end) : '';
+          roomElement.innerHTML = `
+            <h3>${room.name}</h3>
+            <p>Room ID: ${room.roomId}</p>  
+            <p>Capacity: ${room.capacity}</p>
+            <p>Is ${room.name} available: ${room.canReserve}</p>
+            ${room.start ? `<p>Room Start: ${formattedStart}</p>` : ''}
+            ${room.end ? `<p>Room End: ${formattedEnd}</p>` : ''}
+          `;
+          roomListElement.appendChild(roomElement);
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  </script>
+</body>
+</html>
