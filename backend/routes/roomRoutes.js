@@ -3,11 +3,12 @@ const router = express.Router();
 const Room = require("../models/roomModel.js");
 const moment = require("moment-timezone");
 
-
+// ใช้ทดสอบว่า route ถูกต้อง
 router.get("/", (req, res) => {
     res.send("hi");
 });
 
+// สร้างห้องประชุมใหม่
 router.post("/create", async (req, res) => {
     try {
         const { name, capacity } = req.body;
@@ -33,6 +34,7 @@ router.post("/create", async (req, res) => {
     }
 });
 
+// แสดงห้องประชุมทั้งหมด
 router.get("/show", async (req, res) => {
     try {
         const rooms = await Room.find();
@@ -43,6 +45,32 @@ router.get("/show", async (req, res) => {
     }
 });
 
+router.get("/check", async (req, res) => {
+    try {
+        const { identifier, dateTime } = req.body; // in this format "DD/MM/YY HH:mm"
+
+        if (!(identifier && dateTime)) {
+            return res.status(400).send("Missing required fields.");
+        }
+
+        const searchQuery = isNaN(identifier) ? { name: identifier } : { roomId: parseInt(identifier) };
+
+        const room = await Room.findOne(searchQuery);
+
+        if (room && room.canReserve) {
+            res.status(200).send("This room is available");
+        } else {
+            res.status(409).send("This room is unavailable");
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal server error.");
+    }
+});
+
+
+// หาห้องประชุมที่ต้องการด้วย id (roomId auto increment เองทีละ 1)
 router.get("/:roomId", async (req, res) => {
     try {
         const roomId = req.params.roomId;
@@ -59,22 +87,7 @@ router.get("/:roomId", async (req, res) => {
     }
 });
 
-router.get("/:name", async (req, res) => {
-    try {
-        const name = req.params.name;
-        const room = await Room.findOne({ name });
-
-        if (!room) {
-            return res.status(404).send("Room not found.");
-        }
-
-        res.status(200).json(room);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal server error: " + error.message);
-    }
-});
-
+// หาห้องประชุมด้วยชื่อ
 router.get("/name/:name", async (req, res) => {
     try {
         const inputName = req.params.name.toLowerCase();
@@ -91,6 +104,7 @@ router.get("/name/:name", async (req, res) => {
     }
 });
 
+// จองห้องประชุม
 router.post("/reserve", async (req, res) => {
     try {
         const { roomId, start, end } = req.body;
@@ -119,7 +133,7 @@ router.post("/reserve", async (req, res) => {
     }
 });
 
-
+// ยกเลิกห้องประชุม
 router.post("/cancel", async (req, res) => {
     try {
         const { roomId } = req.body;

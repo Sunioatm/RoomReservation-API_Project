@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel.js");
 
+// API สำหรับการลงทะเบียนผู้ใช้งานใหม่
 router.post("/register", async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -32,6 +33,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
+// API สำหรับ login โดยสามารถใช้ Email หรือ Username
 router.post("/login", async (req, res) => {
     try {
         const { identifier, password } = req.body;
