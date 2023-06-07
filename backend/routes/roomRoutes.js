@@ -107,55 +107,74 @@ router.get("/name/:name", async (req, res) => {
 // จองห้องประชุม
 router.post("/reserve", async (req, res) => {
     try {
-        const { roomId, start, end } = req.body;
-
-        const room = await Room.findOne({ roomId });
-
-        if (!room) {
-            return res.status(404).send("Room not found.");
-        }
-
-        if (room.canReserve) {
-            room.start = moment.tz(start, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
-            room.end = moment.tz(end, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
-            room.canReserve = false;
-            
-            await room.save();
-            res.status(200).json(room);
-
-        } else {
-            res.status(409).send("This room is already reserved.")
-        }
-
+      const { roomId, start, end } = req.body;
+  
+      const room = await Room.findOne({ roomId });
+  
+      if (!room) {
+        return res.status(404).send("Room not found.");
+      }
+  
+      const startReserve = moment.tz(start, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
+      const endReserve = moment.tz(end, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
+      const newReserve = [startReserve, endReserve];
+  
+      // Check if the new reservation overlaps with any existing reservations
+      const isAvailable = room.reserveDate.every(([startExisting, endExisting]) => {
+        return (
+          endReserve <= startExisting || startReserve >= endExisting
+        );
+      });
+  
+      if (isAvailable) {
+        // Add the new reservation to the reserveDate array
+        room.reserveDate.push(newReserve);
+  
+        await room.save();
+        res.status(200).json(room);
+      } else {
+        res.status(409).send("This room is unavailable during the specified time.");
+      }
     } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal server error: " + error.message);
+      console.error(error);
+      res.status(500).send("Internal server error: " + error.message);
     }
-});
+  });
+  
 
 // ยกเลิกห้องประชุม
 router.post("/cancel", async (req, res) => {
     try {
-        const { roomId } = req.body;
-
-        const room = await Room.findOne({ roomId });
-
-        if (!room) {
-            return res.status(404).send("Room not found.");
-        }
-
-        room.start = null;
-        room.end = null;
-        room.canReserve = true;
-
+      const { roomId, start } = req.body;
+  
+      const room = await Room.findOne({ roomId });
+  
+      if (!room) {
+        return res.status(404).send("Room not found.");
+      }
+  
+      const startReserve = moment.tz(start, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
+  
+      // Find the index of the reservation with matching start time
+      const reservationIndex = room.reserveDate.findIndex(([startExisting]) => {
+        return startReserve.getTime() === startExisting.getTime();
+      });
+  
+      if (reservationIndex !== -1) {
+        // Remove the reservation from the reserveDate array
+        room.reserveDate.splice(reservationIndex, 1);
+  
         await room.save();
-
         res.status(200).json(room);
+      } else {
+        res.status(404).send("Reservation not found.");
+      }
     } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal server error: " + error.message);
+      console.error(error);
+      res.status(500).send("Internal server error: " + error.message);
     }
-});
+  });
+  
 
 
 module.exports = router;

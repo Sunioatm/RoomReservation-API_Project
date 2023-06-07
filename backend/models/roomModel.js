@@ -17,18 +17,11 @@ const roomSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    start: {
-        type: Date,
-        default: null
+    reserveDate : {
+        type : [[Date,Date]],
+        default : []
     },
-    end: {
-        type: Date,
-        default: null
-    },
-    canReserve: {
-        type: Boolean,
-        default: true
-    }
+
 })
 
 roomSchema.pre("save", async function (next) {
