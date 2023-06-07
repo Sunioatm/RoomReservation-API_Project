@@ -18,13 +18,16 @@ const roomSchema = new mongoose.Schema({
         required: false
     },
     start: {
-        type: Date
+        type: Date,
+        default: null
     },
     end: {
-        type: Date
+        type: Date,
+        default: null
     },
-    status: {
-        type: Boolean
+    canReserve: {
+        type: Boolean,
+        default: true
     }
 })
 
