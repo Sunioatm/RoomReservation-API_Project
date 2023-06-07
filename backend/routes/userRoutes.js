@@ -66,6 +66,7 @@ router.post("/login", async (req, res) => {
             user.token = token;
 
             res.status(200).json(user);
+            
         } else {
             res.status(401).send("Invalid email/username or password.");
         }
