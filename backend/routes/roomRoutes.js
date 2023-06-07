@@ -47,7 +47,7 @@ router.get("/show", async (req, res) => {
 
 router.get("/check", async (req, res) => {
     try {
-        const { identifier, start, end } = req.query;
+        const { identifier, start, end } = req.body;
 
         if (!(identifier && start && end)) {
             return res.status(400).send("Missing required fields.");
