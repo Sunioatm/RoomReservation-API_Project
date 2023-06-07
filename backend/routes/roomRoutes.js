@@ -101,9 +101,9 @@ router.post("/reserve", async (req, res) => {
             return res.status(404).send("Room not found.");
         }
 
-        room.start = moment(`${start}`, "DD/MM/YY HH:mm").tz("Asia/Bangkok").toDate();
-        room.end = moment(`${end}`, "DD/MM/YY HH:mm").tz("Asia/Bangkok").toDate();
-        room.canReserve = false
+        room.start = moment.tz(start, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
+        room.end = moment.tz(end, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
+        room.canReserve = false;
 
         await room.save();
 
