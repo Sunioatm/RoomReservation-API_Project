@@ -55,19 +55,18 @@ Status 200 OK
 <pre>
 {
     "name" : "Room7",
-    "capacity" : "77"
+    "capacity" : "777"
 }
 </pre>
 #### Response
 <pre>
-Status 201 Created
 {
     "message": "Room Created",
     "room": {
         "name": "Room7",
-        "capacity": "77",
-        "reserveDate": [],
-        "_id": "6481d12a4d3ea04bde196851",
+        "capacity": "777",
+        "_id": "64825047e06e42f8df258927",
+        "reserveDateTime": [],
         "roomId": 7,
         "__v": 0
     }
@@ -79,22 +78,24 @@ Status 201 Created
 Status 200 OK
 [
     {
-        "_id": "64816db9b61a279d253c6020",
+        "_id": "648234abf72614d317ec48d3",
         "name": "Room1",
         "capacity": "15",
-        "reserveDate": [
-            [
-                "2023-06-08T10:30:00.000Z",
-                "2023-06-08T10:31:00.000Z"
-            ],
-            [
-                "2023-06-08T11:00:00.000Z",
-                "2023-06-08T11:30:00.000Z"
-            ]
+        "reserveDateTime": [
+            {
+                "start": "2023-06-09T03:00:00.000Z",
+                "end": "2023-06-09T04:00:00.000Z",
+                "_id": "64824511001bfe27241377e6"
+            },
+            {
+                "start": "2023-06-09T05:00:00.000Z",
+                "end": "2023-06-09T06:00:00.000Z",
+                "_id": "6482451d001bfe27241377ea"
+            }
         ],
         "roomId": 1,
-        "__v": 26
-    }, ....
+        "__v": 43
+    }, ...
 ]
 </pre>
 ### GET /:id
@@ -102,21 +103,23 @@ Status 200 OK
 <pre>
 Statuus 200 OK
 {
-    "_id": "64816db9b61a279d253c6020",
+    "_id": "648234abf72614d317ec48d3",
     "name": "Room1",
     "capacity": "15",
-    "reserveDate": [
-        [
-            "2023-06-08T10:30:00.000Z",
-            "2023-06-08T10:31:00.000Z"
-        ],
-        [
-            "2023-06-08T11:00:00.000Z",
-            "2023-06-08T11:30:00.000Z"
-        ]
+    "reserveDateTime": [
+        {
+            "start": "2023-06-09T03:00:00.000Z",
+            "end": "2023-06-09T04:00:00.000Z",
+            "_id": "64824511001bfe27241377e6"
+        },
+        {
+            "start": "2023-06-09T05:00:00.000Z",
+            "end": "2023-06-09T06:00:00.000Z",
+            "_id": "6482451d001bfe27241377ea"
+        }
     ],
     "roomId": 1,
-    "__v": 26
+    "__v": 43
 }
 </pre>
 ### GET /name/:name
@@ -124,21 +127,23 @@ Statuus 200 OK
 <pre>
 Status 200 OK
 {
-    "_id": "64816db9b61a279d253c6020",
+    "_id": "648234abf72614d317ec48d3",
     "name": "Room1",
     "capacity": "15",
-    "reserveDate": [
-        [
-            "2023-06-08T10:30:00.000Z",
-            "2023-06-08T10:31:00.000Z"
-        ],
-        [
-            "2023-06-08T11:00:00.000Z",
-            "2023-06-08T11:30:00.000Z"
-        ]
+    "reserveDateTime": [
+        {
+            "start": "2023-06-09T03:00:00.000Z",
+            "end": "2023-06-09T04:00:00.000Z",
+            "_id": "64824511001bfe27241377e6"
+        },
+        {
+            "start": "2023-06-09T05:00:00.000Z",
+            "end": "2023-06-09T06:00:00.000Z",
+            "_id": "6482451d001bfe27241377ea"
+        }
     ],
     "roomId": 1,
-    "__v": 26
+    "__v": 43
 }
 </pre>
 ### POST /check
@@ -160,22 +165,23 @@ This room is available during the specified time.
 <pre>
 {
     "identifier" : "7",
-    "start" : "08/06/23 10:00",
-    "end" : "08/06/23 11:30"
+    "start" : "09/06/23 11:00",
+    "end" : "09/06/23 12:00"
 }
 </pre>
 #### Response
 <pre>
 Status 200 Ok
 {
-    "_id": "6481d12a4d3ea04bde196851",
+    "_id": "64825047e06e42f8df258927",
     "name": "Room7",
-    "capacity": "77",
-    "reserveDate": [
-        [
-            "2023-06-08T03:00:00.000Z",
-            "2023-06-08T04:30:00.000Z"
-        ]
+    "capacity": "777",
+    "reserveDateTime": [
+        {
+            "start": "2023-06-09T04:00:00.000Z",
+            "end": "2023-06-09T05:00:00.000Z",
+            "_id": "64825162e06e42f8df258972"
+        }
     ],
     "roomId": 7,
     "__v": 1
@@ -186,7 +192,7 @@ Status 200 Ok
 <pre>
 {
     "identifier" : "7",
-    "start" : "08/06/23 10:00"
+    "start" : "09/06/23 11:00"
 }
 </pre>
 #### Resposne
@@ -195,10 +201,10 @@ Status 200 OK
 {
     "message": "Cancel successfully",
     "room": {
-        "_id": "6481d12a4d3ea04bde196851",
+        "_id": "64825047e06e42f8df258927",
         "name": "Room7",
-        "capacity": "77",
-        "reserveDate": [],
+        "capacity": "777",
+        "reserveDateTime": [],
         "roomId": 7,
         "__v": 2
     }
