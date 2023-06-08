@@ -10,7 +10,6 @@ const reservationTask = () => {
       console.log(currentDateTime);
 
       // Find all rooms with end time less than or equal to the current time
-      
       const roomsToUpdate = await Room.find({
         reserveDate: {
           $elemMatch: { $lte: currentDateTime }

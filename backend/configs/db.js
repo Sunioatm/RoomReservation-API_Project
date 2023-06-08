@@ -21,7 +21,7 @@ const connectDB = async () => {
 
         // Start the cron job
         task.start();
-        
+
     } catch (error) {
         console.error(`Error: ${error.message}`);
         process.exit(1);
