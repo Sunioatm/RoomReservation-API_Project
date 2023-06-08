@@ -15,12 +15,14 @@ const connectDB = async () => {
         console.log(`MongoDB Room Connected: ${connRoom.connection.host}`);
 
         // Schedule the reservation task to run
-        const task = cron.schedule("* * * * *", () => {
-            reservationTask();
-        });
+
+        // const task = cron.schedule("* * * * *", () => {
+        //     reservationTask();
+        // });
 
         // Start the cron job
-        task.start();
+
+        // task.start();
 
     } catch (error) {
         console.error(`Error: ${error.message}`);
