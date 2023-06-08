@@ -89,16 +89,22 @@ const roomCheck = async (req, res) => {
       return res.status(400).send("Start time must be less than end time.");
     }
 
-    const isReserved = room.reserveDateTime.some(({ start: reservedStart, end: reservedEnd }) => {
-      return (startReserve >= reservedStart && startReserve < reservedEnd) || // ตัดขวา
-        (endReserve > reservedStart && endReserve <= reservedEnd) || // ตัดซ้าย
-        (startReserve <= reservedStart && endReserve >= reservedEnd) // ครอบ
+    // const isReserved = room.reserveDateTime.some(({ start: reservedStart, end: reservedEnd }) => {
+    //   return (startReserve >= reservedStart && startReserve < reservedEnd) || // ตัดขวา
+    //     (endReserve > reservedStart && endReserve <= reservedEnd) || // ตัดซ้าย
+    //     (startReserve <= reservedStart && endReserve >= reservedEnd) // ครอบ
+    // });
+
+    const isAvailable = room.reserveDateTime.every(({ start: startExisting, end: endExisting }) => {
+      return (
+        endReserve <= startExisting || startReserve >= endExisting
+      );
     });
 
-    if (isReserved) {
-      res.status(409).send("This room is unavailable during the specified time.");
+    if (isAvailable) {
+      res.status(409).send("This room is available during the specified time.");
     } else {
-      res.status(200).send("This room is available during the specified time.");
+      res.status(200).send("This room is unavailable during the specified time.");
     }
   } catch (error) {
     console.error(error);
