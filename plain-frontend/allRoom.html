@@ -16,10 +16,10 @@
 
 // Function to format date and time in Bangkok timezone
 function formatDateTime(dateTimeString) {
-  const options = { timeZone: 'Asia/Bangkok', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false };
-  const formattedDate = new Date(dateTimeString).toLocaleDateString('en-US', options);
-  const formattedTime = new Date(dateTimeString).toLocaleTimeString('en-US', options);
-  return `${formattedDate} ${formattedTime}`;
+  const date = new Date(dateTimeString);
+  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  const formattedTime = `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+  return `${formattedDate}, ${formattedTime}`;
 }
 
 
@@ -40,7 +40,7 @@ fetch('http://localhost:5000/api/rooms/show')
           let value = room[key];
 
           if (key === 'reserveDate' && Array.isArray(value)) {
-            value = value.map(dateRange => `[${formatDateTime(dateRange[0])},${formatDateTime(dateRange[1])}]`).join('<br>');
+            value = value.map(dateRange => `[${formatDateTime(dateRange[0])}, ${formatDateTime(dateRange[1])}]`).join(',<br>');
           }
 
           roomDetails += `<p>${key}: ${value}</p>`;
