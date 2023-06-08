@@ -91,9 +91,9 @@ const roomCheck = async (req, res) => {
 
     const isReserved = room.reserveDate.some(([reservedStart, reservedEnd]) => {
       return (
-        (startReserve >= reservedStart && startReserve < reservedEnd) ||
-        (endReserve > reservedStart && endReserve <= reservedEnd) ||
-        (startReserve <= reservedStart && endReserve >= reservedEnd)
+        (startReserve >= reservedStart && startReserve < reservedEnd) || // ตัดขวา
+        (endReserve > reservedStart && endReserve <= reservedEnd) || // ตัดซ้าย
+        (startReserve <= reservedStart && endReserve >= reservedEnd) // ครอบ
       );
     });
 
