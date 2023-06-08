@@ -6,15 +6,16 @@ For vonder internship assignment
 ### http://localhost:{PORT}/api/users
 
 ### POST /register
+#### Request Body
 <pre>
-Request Body
 {
     "username" : "tester",
     "email" : "tester@email.com",
     "password" : "123456"
 }
-
-Response 
+</pre>
+#### Response 
+<pre>
 Status 201 Created
 {
     "username": "tester",
@@ -25,14 +26,16 @@ Status 201 Created
 }
 </pre>
 ### POST /login
+
+#### Request Body
 <pre>
-Request Body
 {
     "identifier":"tester",
     "password":"123456"
 }
-
-Response
+</pre>
+#### Response
+<pre>
 Status 200 OK
 {
     "_id": "6481772bcc1c8fc63823ce76",
@@ -48,14 +51,15 @@ Status 200 OK
 ### http://localhost:{port}/api/rooms
 
 ### POST /create
+#### Request Body
 <pre>
-Request Body
 {
     "name" : "Room7",
     "capacity" : "77"
 }
-
-Response
+</pre>
+#### Response
+<pre>
 Status 201 Created
 {
     "message": "Room Created",
@@ -70,8 +74,8 @@ Status 201 Created
 }
 </pre>
 ### GET /show
+#### Response
 <pre>
-Response
 Status 200 OK
 [
     {
@@ -94,8 +98,9 @@ Status 200 OK
 ]
 </pre>
 ### GET /:id
+#### Resposne
 <pre>
-Resposne 200 OK
+Statuus 200 OK
 {
     "_id": "64816db9b61a279d253c6020",
     "name": "Room1",
@@ -115,8 +120,9 @@ Resposne 200 OK
 }
 </pre>
 ### GET /name/:name
+#### Response 
 <pre>
-Response 200 OK
+Status 200 OK
 {
     "_id": "64816db9b61a279d253c6020",
     "name": "Room1",
@@ -136,28 +142,30 @@ Response 200 OK
 }
 </pre>
 ### POST /check
+#### Request Body
 <pre>
-Request Body
 {
     "identifier" : "1",
     "start" : "08/06/23 20:00",
     "end" : "08/06/23 21:00"
 }
-
-Response
+</pre>
+#### Response
+<pre>
 Status 200 Ok
 This room is available during the specified time.
 </pre>
 ### POST /reserve
+#### Request Body
 <pre>
-Request Body
 {
     "identifier" : "7",
     "start" : "08/06/23 10:00",
     "end" : "08/06/23 11:30"
 }
-
-Response
+</pre>
+#### Response
+<pre>
 Status 200 Ok
 {
     "_id": "6481d12a4d3ea04bde196851",
@@ -174,14 +182,15 @@ Status 200 Ok
 }
 </pre>
 ### POST /cancel
+#### Request Body
 <pre>
-Request Body
 {
     "identifier" : "7",
     "start" : "08/06/23 10:00"
 }
-
-Resposne
+</pre>
+#### Resposne
+<pre>
 Status 200 OK
 {
     "message": "Cancel successfully",
