@@ -1,68 +1,56 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Room Information</title>
 </head>
+
 <body>
   <h1>Room Information</h1>
   <div id="room-list"></div>
 
   <script>
-    // Function to format date and time in local timezone
+    // Function to format date and time in Bangkok timezone
     function formatDateTime(dateTimeString) {
-      const options = { timeZone: 'Asia/Bangkok', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-      return new Date(dateTimeString).toLocaleString('en-US', options);
+      const date = new Date(dateTimeString);
+      const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+      const formattedTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+      return `${formattedSDate}, ${formattedTime}`;
     }
 
-// Function to format date and time in Bangkok timezone
-function formatDateTime(dateTimeString) {
-  const date = new Date(dateTimeString);
-  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-  const formattedTime = `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
-  return `${formattedDate}, ${formattedTime}`;
-}
+    // Fetch room data from the API
+    fetch('http://localhost:5000/api/rooms/show')
+      .then(response => response.json())
+      .then(data => {
+        const roomListElement = document.getElementById('room-list');
+        data.forEach(room => {
+          const roomElement = document.createElement('div');
+          let roomDetails = '';
 
+          for (const key in room) {
+            if (key !== 'name' && key !== 'roomId') {
+              let value = room[key];
 
+              if (key === 'reserveDateTime' && Array.isArray(value)) {
+                value = value.map(dateTimeRange => `[${formatDateTime(dateTimeRange.start)}, ${formatDateTime(dateTimeRange.end)}]`).join(',<br>');
+              }
 
-// Fetch room data from the API
-fetch('http://localhost:5000/api/rooms/show')
-  .then(response => response.json())
-  .then(data => {
-    const roomListElement = document.getElementById('room-list');
-    data.forEach(room => {
-      const roomElement = document.createElement('div');
-      const formattedStart = room.start ? formatDateTime(room.start) : '';
-      const formattedEnd = room.end ? formatDateTime(room.end) : '';
-      let roomDetails = '';
-
-      for (const key in room) {
-        if (key !== 'name' && key !== 'roomId') {
-          let value = room[key];
-
-          if (key === 'reserveDate' && Array.isArray(value)) {
-            value = value.map(dateRange => `[${formatDateTime(dateRange[0])}, ${formatDateTime(dateRange[1])}]`).join(',<br>');
+              roomDetails += `<p>${key}: ${value}</p>`;
+            }
           }
 
-          roomDetails += `<p>${key}: ${value}</p>`;
-        }
-      }
-
-      roomElement.innerHTML = `
-        <h3>${room.name}</h3>
-        <p>Room ID: ${room.roomId}</p>  
-        ${roomDetails}
-        ${room.start ? `<p>Room Start: ${formattedStart}</p>` : ''}
-        ${room.end ? `<p>Room End: ${formattedEnd}</p>` : ''}
-      `;
-      roomListElement.appendChild(roomElement);
-    });
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
-
-
-
+          roomElement.innerHTML = `
+            <h3>${room.name}</h3>
+            <p>Room ID: ${room.roomId}</p>  
+            ${roomDetails}
+          `;
+          roomListElement.appendChild(roomElement);
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   </script>
 </body>
+
 </html>

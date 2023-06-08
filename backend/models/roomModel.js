@@ -17,9 +17,14 @@ const roomSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    reserveDate: {
-        type: [[Date, Date]],
-        default: []
+    reserveDateTime: {
+        type: [
+            {
+                start: { type: Date, required: true },
+                end: { type: Date, required: true },
+            },
+        ],
+        default: [],
     },
 
 })

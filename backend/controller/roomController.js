@@ -89,12 +89,10 @@ const roomCheck = async (req, res) => {
       return res.status(400).send("Start time must be less than end time.");
     }
 
-    const isReserved = room.reserveDate.some(([reservedStart, reservedEnd]) => {
-      return (
-        (startReserve >= reservedStart && startReserve < reservedEnd) || // ตัดขวา
+    const isReserved = room.reserveDateTime.some(({ start: reservedStart, end: reservedEnd }) => {
+      return (startReserve >= reservedStart && startReserve < reservedEnd) || // ตัดขวา
         (endReserve > reservedStart && endReserve <= reservedEnd) || // ตัดซ้าย
         (startReserve <= reservedStart && endReserve >= reservedEnd) // ครอบ
-      );
     });
 
     if (isReserved) {
@@ -130,18 +128,18 @@ const roomReserve = async (req, res) => {
       return res.status(400).send("Start time must be less than end time.");
     }
 
-    const newReserve = [startReserve, endReserve];
+    const newReserve = { start: startReserve, end: endReserve };
 
     // Check if the new reservation overlaps with any existing reservations
-    const isAvailable = room.reserveDate.every(([startExisting, endExisting]) => {
+    const isAvailable = room.reserveDateTime.every(({ start: startExisting, end: endExisting }) => {
       return (
         endReserve <= startExisting || startReserve >= endExisting
       );
     });
 
     if (isAvailable) {
-      // Add the new reservation to the reserveDate array
-      room.reserveDate.push(newReserve);
+      // Add the new reservation to the reserveDateTime array
+      room.reserveDateTime.push(newReserve);
 
       await room.save();
       res.status(200).json(room);
@@ -171,13 +169,13 @@ const roomCancel = async (req, res) => {
     const startReserve = moment.tz(start, "DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
 
     // Find the index of the reservation with matching start time
-    const reservationIndex = room.reserveDate.findIndex(([startExisting]) => {
+    const reservationIndex = room.reserveDateTime.findIndex(({ start: startExisting }) => {
       return startReserve.getTime() === startExisting.getTime();
     });
 
     if (reservationIndex !== -1) {
-      // Remove the reservation from the reserveDate array
-      room.reserveDate.splice(reservationIndex, 1);
+      // Remove the reservation from the reserveDateTime array
+      room.reserveDateTime.splice(reservationIndex, 1);
 
       await room.save();
       res.status(200).json({ message: "Cancel successfully", room });
@@ -199,4 +197,4 @@ module.exports = {
   roomCreate,
   roomReserve,
   roomCancel
-}
+};

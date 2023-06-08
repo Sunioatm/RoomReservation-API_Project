@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const Room = require("../models/roomModel.js");
-const moment = require("moment-timezone");
 const RoomController = require("../controller/roomController.js")
 
 // ใช้ทดสอบว่า route ถูกต้อง

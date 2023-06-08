@@ -3,37 +3,24 @@ const cron = require("node-cron");
 const Room = require("../models/roomModel.js");
 
 const reservationTask = () => {
-  cron.schedule("* * * * *", async () => {
+  cron.schedule("0 * * * * *", async () => {
     try {
       const currentDateTime = moment().tz("DD/MM/YY HH:mm", "Asia/Bangkok").toDate();
-      // To check currentTime
       console.log(currentDateTime);
 
-      // Find all rooms with end time less than or equal to the current time
       const roomsToUpdate = await Room.find({
-        reserveDate: {
-          $elemMatch: { $lte: currentDateTime }
-        }
-      });
-      console.log(roomsToUpdate);
-
-      // To check reserveDate
-      roomsToUpdate.forEach((room) => {
-        console.log(room.reserveDate);
+        "reserveDateTime.end": { $lte: currentDateTime }
       });
 
-      // Update the rooms
       await Promise.all(
         roomsToUpdate.map(async (room) => {
-          room.reserveDate.pop();
+          room.reserveDateTime = room.reserveDateTime.filter((reservation) => reservation.end > currentDateTime);
           await room.save();
 
-          // Print every time it has an update.
-          console.log("Reservation status updated successfully. (Some room has been removed)");
+          console.log("Reservation status updated successfully. (Some room reservations have been removed)");
         })
       );
 
-      // To print every time it updates (but it's too much)
       console.log("Reservation status updated successfully.");
 
     } catch (error) {
