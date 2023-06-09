@@ -15,8 +15,9 @@
       const date = new Date(dateTimeString);
       const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
       const formattedTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-      return `${formattedSDate}, ${formattedTime}`;
+      return `${formattedDate}, ${formattedTime}`;
     }
+
 
     // Fetch room data from the API
     fetch('http://localhost:5000/api/rooms/show')
