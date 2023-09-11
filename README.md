@@ -101,7 +101,7 @@ Status 200 OK
 ### GET /:id
 #### Resposne
 <pre>
-Statuus 200 OK
+Status 200 OK
 {
     "_id": "648234abf72614d317ec48d3",
     "name": "Room1",
