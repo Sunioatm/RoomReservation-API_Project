@@ -1,8 +1,9 @@
-# Vonder-Internship
+# Internship assignment
 For vonder internship assignment
+To show about backend API project by using expressjs
 
 
-# User API
+# User API (in localhost)
 ### http://localhost:{PORT}/api/users
 
 ### POST /register
