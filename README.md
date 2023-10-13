@@ -2,9 +2,15 @@
 For vonder internship assignment
 To show about backend API project by using expressjs
 
+# Run in local
+<pre>
+    npm install
+    npm run server
+</pre>
 
-# User API (in localhost)
-### http://localhost:{PORT}/api/users
+# User API 
+### https://backend-room-reservation-api.onrender.com/api/users
+
 
 ### POST /register
 #### Request Body
@@ -49,7 +55,7 @@ Status 200 OK
 </pre>
 
 # Room API
-### http://localhost:{port}/api/rooms
+### https://backend-room-reservation-api.onrender.com/api/rooms
 
 ### POST /create
 #### Request Body
